@@ -1,4 +1,10 @@
-{% extends "_layout.html" %}
+{% if current_user.is_authenticated %}
+  {% extends "signed_in.html" %}
+{% else %}
+  {% extends "_layout.html" %}
+{% endif %}
+
+
 
 {% block title %}
   Homepage
@@ -22,16 +28,27 @@
   {% endwith %}
   <br/>
   <br/>
-  {% if not current_user.is_authenticated %}
-            <a href="/login">Log In</a>
-            <a href="/users/new">Sign Up</a>
 
-  {% else%}
-    <form action="{{ url_for('session.destroy') }}" method="POST">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-      <button type="submit" class="btn btn-primary">Log out</button>
-    </form>         
-  {% endif %}
+  {% for u in user%}
+    <hr/>
+    <h6>{{u.username}}</h6>
+    {% if u==current_user %}
+      <div><img src="{{u.profile_pic}}" alt="Profile Pic Missing" style="height:220px;width:220px;border-radius: 50%;"></div>
+    {% else %}
+      <div><img src="{{u.profile_pic}}" alt="Profile Pic Missing" style="height:220px;width:220px;border-radius: 50%;"></div>
+      <div>
+        <form action="{{url_for('users.show',username=u.username)}}" method="GET">
+          
+          <button type="submit" class="btn btn-primary">See Profile</button>
+        </form>
+      </div>
+    {% endif %}
+    {% for i in u.images%}
+      <img src="{{i.image_path}}" style="width: 200px;height: 200px;">
+    {% endfor %}
+    <hr/>
+  {% endfor%}
+  
 
 
 {% endblock %}

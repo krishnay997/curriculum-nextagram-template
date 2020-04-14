@@ -1,5 +1,73 @@
+{% if current_user.is_authenticated %}
+  {% extends "signed_in.html" %}
+{% else %}
+  {% extends "_layout.html" %}
+{% endif %}
+{% block content %}
+    
 <h1>{{username}} profile page</h1>
-     
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+{% endwith %}
+
+<img src="{{picture}}" alt="Profile Pic Missing" style="height:220px;width:220px;border-radius: 50%;">
+{% if current_user.username != username and current_user.is_authenticated%}
+<form action="{{url_for('users.follow',user_id=user.id)}}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="submit" value="Follow" >
+
+</form>
+{% endif %}
+<br/>
+
+{% if current_user.username==username %}
+    <hr/>
+    <h4>Requests</h4>
+    <br/>
+    {% for requests in follow %}
+    <form action="{{url_for('users.accept',user_id=requests.id)}}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <label>{{requests.follower.username}}</label>
+        <input type="submit" value="Accept" >
+
+    </form>
+
+    {% endfor %}
+{% endif %}
+<hr/>
+{% if current_user.username==username%}
+<h3>Upload images:</h3>
+<form action="{{url_for('users.upload_images')}}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="file" name="imgs"/>
+    <input type="submit" value="Upload"/>
+</form>
+{% endif %}
+<hr/>
+<h3>{{username}} images</h3>
+
+{% if current_user.is_authenticated and current_user.username==username %}
+    {% for e in user.images %}
+        <img src="{{e.image_path}}" alt="Pic Missing" style="height:150px;width:150px;">
+    {% endfor %}
+{% else %}
+
+    {% for e in user.images %}
+        <img src="{{e.image_path}}" alt="Pic Missing" style="height:150px;width:150px;">
+        <form action="{{url_for('payment.new',image_id=e.id)}}" style="display: inline-block;">
+            <input type="submit" value="Donate" />
+        </form>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
+
 
 
 
