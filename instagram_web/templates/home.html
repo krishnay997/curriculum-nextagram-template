@@ -15,8 +15,7 @@
 
 {% block content %}
   <h1>Homepage</h1>
-  <br/>
-  <br/>
+  <hr/>
   {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul class=flashes>
@@ -26,9 +25,10 @@
             </ul>
         {% endif %}
   {% endwith %}
-  <br/>
-  <br/>
-
+  
+  {% if current_user.is_authenticated== False%}
+            <h5>Please sign in or sign up to view profiles</h5>
+  {% endif %}
   {% for u in user%}
     <hr/>
     <h6>{{u.username}}</h6>

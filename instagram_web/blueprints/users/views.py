@@ -37,6 +37,7 @@ def create():
         return redirect(url_for("users.new"))
 
 
+
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
     follow=Following.select().where(Following.user_id==current_user.id).where(Following.approved == False)
@@ -94,7 +95,7 @@ def update(id):
         user_change.username=uname
         user_change.password=password
         user_change.real_password=password
-        user_change.save()
+        
         print("test------------------------------------------------------")
         print(user_change.username)
         print("test------------------------------------------------------")

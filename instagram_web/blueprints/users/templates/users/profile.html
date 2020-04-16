@@ -16,17 +16,21 @@
         {% endif %}
 {% endwith %}
 
+
+
 <img src="{{picture}}" alt="Profile Pic Missing" style="height:220px;width:220px;border-radius: 50%;">
 {% if current_user.username != username and current_user.is_authenticated%}
 <form action="{{url_for('users.follow',user_id=user.id)}}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <input type="submit" value="Follow" >
-
 </form>
 {% endif %}
 <br/>
 
 {% if current_user.username==username %}
+    <a class="nav-link" href="profpic" >Change Profile Picture</a>
+    <hr/>
+
     <hr/>
     <h4>Requests</h4>
     <br/>
