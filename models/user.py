@@ -18,8 +18,9 @@ def has_special(word):
 
 
 class User(UserMixin,BaseModel):
-    first_name = pw.CharField(unique=False,null=False)
-    last_name = pw.CharField(unique=False,null=False)
+    # first and last name have been set to null=True in order to work with react-nextagram, as the sign up form doesn not take in first or last name
+    first_name = pw.CharField(unique=False,null=True)
+    last_name = pw.CharField(unique=False,null=True)
     username=pw.CharField(unique=True,null=False)
     email=pw.CharField(unique=True,null=False)
     password=pw.CharField(unique=False,null=False)
@@ -52,24 +53,22 @@ class User(UserMixin,BaseModel):
         if self.real_password is not None:
             self.password=generate_password_hash(self.password)
 
-    @hybrid_property
-    def profile_image_url(self):
-        return self.profile_pic
+    
     
     @hybrid_property
     def follower_requests(self):
         from models.following import Following
-        return User.select().join(Following, on=(User.id==Following.follower_id)).where((Following.user_id==self.id) and (Following.approved==False))
+        return User.select().join(Following, on=(User.id==Following.follower_id)).where((Following.user_id==self.id) & (Following.approved==False))
 
     @hybrid_property
     def followers(self):
         from models.following import Following
-        return User.select().join(Following, on=(User.id==Following.follower_id)).where((Following.user_id==self.id) and (Following.approved==True))
+        return User.select().join(Following, on=(User.id==Following.follower_id)).where((Following.user_id==self.id) & (Following.approved==True))
 
     @hybrid_property
     def following(self):
         from models.following import Following
-        return User.select().join(Following, on=(User.id==Following.user_id)).where((Following.follower_id==self.id) and (Following.approved==True))
+        return User.select().join(Following, on=(User.id==Following.user_id)).where((Following.follower_id==self.id) & (Following.approved==True))
 
 class Images(UserMixin,BaseModel):
     user = pw.ForeignKeyField(User, backref='images')

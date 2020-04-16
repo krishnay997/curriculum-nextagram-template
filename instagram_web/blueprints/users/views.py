@@ -6,6 +6,7 @@ import os
 import boto3
 import botocore
 import datetime
+from flask_cors import CORS
 
 
 users_blueprint = Blueprint('users',

@@ -40,6 +40,25 @@
 
     {% endfor %}
 {% endif %}
+
+
+
+{% if current_user.username==username %}
+    <hr/>
+    <h4>Followers</h4>
+    <br/>
+    {% for f in current_user.followers %}
+
+        <h5>{{f.username}}</h5>
+    
+
+    {% endfor %}
+{% endif %}
+
+
+
+
+
 <hr/>
 {% if current_user.username==username%}
 <h3>Upload images:</h3>
